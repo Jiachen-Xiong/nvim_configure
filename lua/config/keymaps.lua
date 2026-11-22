@@ -1,3 +1,2 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- 自定义键位，在 VeryLazy 时加载；LazyVim 默认键位保持启用。
+-- 默认键位：https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
