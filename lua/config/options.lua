@@ -56,8 +56,9 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.updatetime = 300
 
--- 补全菜单：不自动选中，由 <Tab> 确认。
-vim.opt.completeopt = { "menuone", "noselect" }
+-- 补全菜单：menuone 单候选也弹出，noinsert 不自动插入文本。
+-- 首项自动选中，由 <Tab>（映射为 <C-y>）确认；<Enter> 只换行。
+vim.opt.completeopt = { "menuone", "noinsert" }
 
 -- 编码 -------------------------------------------------------------------
 
