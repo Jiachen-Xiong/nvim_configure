@@ -1,12 +1,15 @@
-# Neovim 配置（Windows / WSL2）
+# Neovim 配置（无插件）
 
-基于 [LazyVim](https://github.com/LazyVim/LazyVim) 的个人配置。Windows 与 WSL2/Linux
-共用同一个仓库，平台差异由 Lua 中的 `vim.fn.has("win32")` 判断。
+只使用 Neovim 内置功能，不依赖插件管理器：启动快、无插件更新、Windows 与 WSL2 共用一份配置。
+
+包含：内置 LSP（clangd）、内置补全菜单、treesitter 高亮（Neovim 自带 parser）、GBK 编码识别、保存补空行、剪贴板桥接。
 
 ## 安装
 
-1. 安装 [Neovim](https://github.com/neovim/neovim/releases)（0.11 及以上，当前测试版本 0.12.6）。
-2. 安装基础工具：`git`、`curl`、`tar`、`unzip`，以及 C 编译器（`gcc` 或 `clang`，用于编译 treesitter parser）。
+1. 安装 Neovim 0.11 及以上（当前使用 0.12.6）。
+2. 安装 `clangd`（C/C++ 语言服务器）：
+   - Windows：安装 LLVM，确保 `clangd.exe` 在 PATH 中。
+   - WSL2 / Linux：`sudo apt install clangd`。
 3. 克隆到 Neovim 配置目录：
 
    Windows（PowerShell）：
@@ -27,26 +30,48 @@
 
    WSL2 / Linux：`cp clang-format ~/.clang-format`
 
-5. 启动 `nvim`。首次启动会自动安装插件、treesitter parser 和 mason 工具。
+5. 启动 `nvim`，无需安装任何东西。
+
+## 目录
+
+```
+init.lua                入口，按顺序加载 config 下的模块
+lua/config/options.lua  选项、环境变量、剪贴板
+lua/config/autocmds.lua 保存补空行、treesitter 高亮
+lua/config/keymaps.lua  键位
+lua/config/lsp.lua      clangd（内置 LSP + 内置补全）
+clang-format            C/C++ 风格（复制到用户主目录）
+curl/.curlrc            Windows 下 Neovim 内 curl 的配置
+```
+
+## 键位
+
+| 按键 | 功能 |
+| --- | --- |
+| `<leader>e` | 文件浏览器（netrw） |
+| `<leader>w` | 保存 |
+| `gd` | 跳转到定义 |
+| `<Tab>` | 补全菜单打开时确认候选，否则插入缩进 |
+| `<Enter>` | 换行 |
+| `gra` / `grn` / `grr` | 代码操作 / 重命名 / 引用（Neovim 内置 LSP 键位） |
+| `K` | 悬浮文档 |
+
+`<leader>` 是空格。
 
 ## 平台差异
 
 | 项目 | Windows | WSL2 / Linux |
 | --- | --- | --- |
-| clangd | LLVM 安装目录（PATH） | mason 安装 |
-| ripgrep / fd | 需在 PATH | `~/.local/bin`（`lua/config/options.lua` 会加入 PATH） |
+| clangd | LLVM 安装目录（PATH） | 系统包 `clangd` |
+| 剪贴板 | 系统默认 | `win32yank.exe`（WSL）/ `xclip`（Linux X11） |
 | clang-format 风格 | `%USERPROFILE%\.clang-format` | `~/.clang-format` |
 | curl 配置 | `curl/.curlrc`（`CURL_HOME` 指定） | 不使用 |
 
-## 行为说明
+## 恢复插件版配置
 
-- `<Tab>`：确认补全候选；`<Enter>`：换行。
-- 保存文件时自动在末尾补一个空行。
-- C/C++：4 空格缩进、第 80 列竖线、clang-format 使用仓库中的 `clang-format` 风格。
-- GBK/ANSI 编码的工程文件（Keil/MDK）可正常打开和保存。
-- `lazy-lock.json` 固定插件版本。
+带 LazyVim 和插件的旧配置保留在 `lazyvim` 分支：
 
-## 可选组件
-
-- 系统剪贴板：Windows 安装 `win32yank`；WSL 安装 `wl-clipboard`（WSLg）或 `win32yank`。
-- Nerd Font 字体：用于文件/图标显示。
+```bash
+git switch lazyvim
+# 首次启动会重新安装插件
+```
